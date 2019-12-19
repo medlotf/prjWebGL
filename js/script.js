@@ -17,7 +17,9 @@ let init=()=>{
 
     controls=new OrbitControls(camera,renderer.domElement);
     controls.addEventListener('change',renderer);
-
+    controls.minDistance=1000;
+    controls.maxDistance=3000;
+    
     let materialArray=[];
     let loader=new THREE.TextureLoader();
     let txt_ft=loader.load('Skybox/meadow_ft.jpg');
