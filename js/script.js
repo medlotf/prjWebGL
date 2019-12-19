@@ -20,23 +20,28 @@ let init=()=>{
 
     let materialArray=[];
     let loader=new THREE.TextureLoader();
-    let txt_ft=loader.load('../skybox/mp_normandy/normandy_ft.tga');
-    let txt_bk=loader.load('../skybox/mp_normandy/normandy_bk.tga');
-    let txt_up=loader.load('../skybox/mp_normandy/normandy_up.tga');
-    let txt_dn=loader.load('../skybox/mp_normandy/normandy_dn.tga');
-    let txt_rt=loader.load('../skybox/mp_normandy/normandy_rt.tga');
-    let txt_lf=loader.load('../skybox/mp_normandy/normandy_lf.tga');
-    materialArray.push(new THREE.MeshBasicMaterial({map:txt_ft}));
-    materialArray.push(new THREE.MeshBasicMaterial({map:txt_bk}));
-    materialArray.push(new THREE.MeshBasicMaterial({map:txt_up}));
-    materialArray.push(new THREE.MeshBasicMaterial({map:txt_dn}));
-    materialArray.push(new THREE.MeshBasicMaterial({map:txt_rt}));
-    materialArray.push(new THREE.MeshBasicMaterial({map:txt_lf}));
-    
-    let skyboxGeo= new THREE.BoxGeometry(10000,10000,10000);
+    let txt_ft=loader.load('Skybox/meadow_ft.jpg');
+    let txt_bk=loader.load('Skybox/meadow_bk.jpg');
+    let txt_up=loader.load('Skybox/meadow_up.jpg');
+    let txt_dn=loader.load('Skybox/meadow_dn.jpg');
+    let txt_rt=loader.load('Skybox/meadow_rt.jpg');
+    let txt_lf=loader.load('Skybox/meadow_lf.jpg');
+    materialArray.push(new THREE.MeshBasicMaterial({map:txt_ft, side:THREE.DoubleSide}));
+    materialArray.push(new THREE.MeshBasicMaterial({map:txt_bk, side:THREE.DoubleSide}));
+    materialArray.push(new THREE.MeshBasicMaterial({map:txt_up, side:THREE.DoubleSide}));
+    materialArray.push(new THREE.MeshBasicMaterial({map:txt_dn, side:THREE.DoubleSide}));
+    materialArray.push(new THREE.MeshBasicMaterial({map:txt_rt, side:THREE.DoubleSide}));
+    materialArray.push(new THREE.MeshBasicMaterial({map:txt_lf, side:THREE.DoubleSide}));
+    let skyboxGeo= new THREE.BoxGeometry(20000,20000,20000);
     let skybox=new THREE.Mesh(skyboxGeo,materialArray);
     scene.add(skybox);
 
-
-
+    animate();
 }
+
+let animate=()=>{
+    renderer.render(scene,camera);
+    requestAnimationFrame(animate);
+}
+
+init();
