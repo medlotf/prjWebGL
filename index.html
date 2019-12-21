@@ -16,6 +16,8 @@
         <script>
                     
             let scene,camera,renderer,controls;
+            let keyboard={};
+            
 
             let init=()=>{
 
@@ -25,7 +27,7 @@
 
                 //Camera:
                 camera= new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,45,30000);
-                camera.position.set(238,0,3160);
+                camera.position.set(238,300,3160);
                 
                 
                 //Renderer:
@@ -34,10 +36,10 @@
                 document.body.appendChild(renderer.domElement);
 
                 //Controls:
-                controls = new THREE.OrbitControls(camera,renderer.domElement);
+            /*  controls = new THREE.OrbitControls(camera,renderer.domElement);
                 controls.addEventListener('change', renderer);
                 controls.minDistance=100;
-                controls.maxDistance=30000;
+                controls.maxDistance=30000;*/
                 
                 //Skybox:
                 let materialArray=[];
@@ -84,7 +86,7 @@
 
                 //Plane:
                 let planeGeo=new THREE.PlaneGeometry(15000,15000);
-                let planeTexture=new THREE.TextureLoader().load('grass.png');
+                let planeTexture=new THREE.TextureLoader().load('texture/grass.png');
                 let planeMat=new THREE.MeshBasicMaterial({map: planeTexture,side: THREE.DoubleSide,needsUpdate: true});
                 let plane=new THREE.Mesh(planeGeo,planeMat);
                 plane.rotation.x = -Math.PI / 2;
@@ -95,12 +97,30 @@
             }
 
             let animate=()=>{
-                renderer.render(scene,camera);
-                console.log(camera.position);
                 requestAnimationFrame(animate);
+
+                if(keyboard[37])
+                {
+                    camera.rotation.y -= Math.PI*0.01;
+                }
+                if(keyboard[39])
+                {
+                    camera.rotation.y += Math.PI*0.01;
+                }
+
+                renderer.render(scene,camera);
             }
-                
-            init();
+
+            let keyDown=(e)=>{
+                keyboard[e.keyCode]=true;
+            }
+            let keyUp=(e)=>{
+                keyboard[e.keyCode]=false;
+            }
+
+            window.addEventListener('keydown',keyDown);
+            window.addEventListener('keyup',keyUp);
+            window.onload=init;
         </script>
 	</body>
 </html>
