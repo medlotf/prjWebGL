@@ -9,6 +9,98 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" />
 	</head>
 	<body>
-		<script src="js/script.js" type="module"></script>
+        <script src="https://threejs.org/build/three.js"></script>
+        <script src="js/GLTFLoader.js"></script>
+        <script src="js/OrbitControls.js"></script>
+        <!--<script src="js/script.js" type="module"></script>-->
+        <script>
+                    
+            let scene,camera,renderer,controls;
+
+            let init=()=>{
+
+                //Scene:
+                scene= new THREE.Scene();
+                scene.background=new THREE.Color(0xdddddd);
+
+                //Camera:
+                camera= new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,45,30000);
+                camera.position.set(238,0,3160);
+                
+                
+                //Renderer:
+                renderer=new THREE.WebGLRenderer({antialias:true});
+                renderer.setSize(window.innerWidth,window.innerHeight);
+                document.body.appendChild(renderer.domElement);
+
+                //Controls:
+                controls = new THREE.OrbitControls(camera,renderer.domElement);
+                controls.addEventListener('change', renderer);
+                controls.minDistance=100;
+                controls.maxDistance=30000;
+                
+                //Skybox:
+                let materialArray=[];
+                let loader=new THREE.TextureLoader();
+                let txt_ft=loader.load('Skybox/meadow_ft.jpg');
+                let txt_bk=loader.load('Skybox/meadow_bk.jpg');
+                let txt_up=loader.load('Skybox/meadow_up.jpg');
+                let txt_dn=loader.load('Skybox/meadow_dn.jpg');
+                let txt_rt=loader.load('Skybox/meadow_rt.jpg');
+                let txt_lf=loader.load('Skybox/meadow_lf.jpg');
+                materialArray.push(new THREE.MeshBasicMaterial({map:txt_ft, side:THREE.DoubleSide}));
+                materialArray.push(new THREE.MeshBasicMaterial({map:txt_bk, side:THREE.DoubleSide}));
+                materialArray.push(new THREE.MeshBasicMaterial({map:txt_up, side:THREE.DoubleSide}));
+                materialArray.push(new THREE.MeshBasicMaterial({map:txt_dn, side:THREE.DoubleSide}));
+                materialArray.push(new THREE.MeshBasicMaterial({map:txt_rt, side:THREE.DoubleSide}));
+                materialArray.push(new THREE.MeshBasicMaterial({map:txt_lf, side:THREE.DoubleSide}));
+                let skyboxGeo= new THREE.BoxGeometry(20000,20000,20000);
+                let skybox=new THREE.Mesh(skyboxGeo,materialArray);
+                scene.add(skybox);
+
+
+                //PointLight
+                let light = new THREE.PointLight(0xc4c4c4,0.3);
+                light.position.set(0,300,500);
+                scene.add(light);
+                let light2 = new THREE.PointLight(0xc4c4c4,0.3);
+                light2.position.set(500,100,0);
+                scene.add(light2);
+                let light3 = new THREE.PointLight(0xc4c4c4,0.3);
+                light3.position.set(0,100,-500);
+                scene.add(light3);
+                let light4 = new THREE.PointLight(0xc4c4c4,0.3);
+                light4.position.set(-500,300,500);
+                scene.add(light4);
+    
+                //House1 object
+                let loaderr=new THREE.GLTFLoader();
+                loaderr.load('fbx/house1/scene.gltf',(obj)=>{
+                    let car=obj.scene.children[0];
+                    car.scale.set(300,300,300);
+                    car.position.set(0,270,0);
+                    scene.add(obj.scene);
+                });
+
+                //Plane:
+                let planeGeo=new THREE.PlaneGeometry(15000,15000);
+                let planeTexture=new THREE.TextureLoader().load('grass.png');
+                let planeMat=new THREE.MeshBasicMaterial({map: planeTexture,side: THREE.DoubleSide,needsUpdate: true});
+                let plane=new THREE.Mesh(planeGeo,planeMat);
+                plane.rotation.x = -Math.PI / 2;
+                //plane.position.set(1695,-9728,1970);
+                scene.add(plane);
+
+                animate();
+            }
+
+            let animate=()=>{
+                renderer.render(scene,camera);
+                console.log(camera.position);
+                requestAnimationFrame(animate);
+            }
+                
+            init();
+        </script>
 	</body>
 </html>
