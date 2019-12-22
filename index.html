@@ -143,6 +143,22 @@
                 scene.add(cible3);
                 
 
+                //bacground table
+                let bgGeo=new THREE.PlaneGeometry(500,500);
+                let bgMat=new THREE.MeshBasicMaterial({color: 0x000000 ,side: THREE.DoubleSide});
+                let bg=new THREE.Mesh(bgGeo,bgMat);
+                bg.rotation.y = -Math.PI / 2;
+                bg.position.set(1440,200,-600);
+                scene.add(bg);
+
+                //table of guns:
+                let presentationGeo=new THREE.PlaneGeometry(300,300);
+                let presentationMat=new THREE.MeshBasicMaterial({color: 0x0e240b ,side: THREE.DoubleSide});
+                let presentation=new THREE.Mesh(presentationGeo,presentationMat);
+                presentation.rotation.y = -Math.PI / 2;
+                presentation.position.set(1450,270,-600);
+                scene.add(presentation);
+
                 window.addEventListener("keydown", onKeyDown, false);
                 window.addEventListener("keyup", onKeyUp, false);
                 window.addEventListener("mousemove", onMouseMove, false);
@@ -187,8 +203,6 @@
                     camera.position.z + Math.cos(camera.rotation.y)*10 - 180
                 );
                 
-                
-
                 
                 //gun.rotation.z=camera.rotation.y ;
                 //gun.rotation.z=camera.rotation.y;
