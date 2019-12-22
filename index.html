@@ -41,7 +41,7 @@
 
                 //Camera:
                 camera= new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,45,30000);
-                camera.position.set(238,300,3160);
+                camera.position.set(3423,300,-615);
                 camera.matrix.extractBasis(right,up,at);
                 
                 
@@ -100,13 +100,14 @@
                     let car=obj.scene.children[0];
                     car.scale.set(1,1,1);
                     car.position.set(238,300,2360);
-                    //car.rotation.set(-Math.PI/2,0,0);
+                    car.rotation.set(-Math.PI/2,0,Math.PI/2);
                     gun1=obj.scene.children[0];
                     scene.add(obj.scene);
 
                     let gun1Pres=gun1.clone();
                     gun1Pres.position.set(1450,270,-600);
                     gun1Pres.scale.set(0.3,0.3,0.3);
+                    gun1Pres.rotation.set(-Math.PI/2,0,0);
                     scene.add(gun1Pres);
 
                     gun1.visible=false;
@@ -117,13 +118,14 @@
                     let car=obj.scene.children[0];
                     car.scale.set(0.12,0.12,0.12);
                     car.position.set(238,300,2360);
-                    car.rotation.z += Math.PI/2;
+                    car.rotation.z += Math.PI;
                     console.log(car.rotation);
                     gun2=obj.scene.children[0];
                     scene.add(obj.scene);
 
                     let gun2Pres=gun2.clone();
                     gun2Pres.position.set(1450,150,-600);
+                    gun2Pres.rotation.set(car.rotation.x,car.rotation.y,-Math.PI/2);
                     gun2Pres.scale.set(0.09,0.09,0.09);
                     scene.add(gun2Pres);
 
@@ -180,8 +182,6 @@
                 txt.position.set(1455,350,-600);
                 scene.add(txt);
 
-                    
-                
 
                 window.addEventListener("keydown", onKeyDown, false);
                 window.addEventListener("keyup", onKeyUp, false);
@@ -213,26 +213,19 @@
                     camera.position.add(right.multiplyScalar(50));
                     camera.matrix.extractBasis(right,up,at);
                 }
-                
-                
+                 
                 gun1.position.set(
-                    camera.position.x - Math.sin(camera.rotation.y)*15 + 150,
+                    camera.position.x - Math.sin(camera.rotation.y)*15 - 200,
                     camera.position.y - 40,
-                    camera.position.z + Math.cos(camera.rotation.y)*10 - 300
+                    camera.position.z + Math.cos(camera.rotation.y)*10 - 100
                 );
                 
                 gun2.position.set(
-                    camera.position.x - Math.sin(camera.rotation.y)*15 + 60,
+                    camera.position.x - Math.sin(camera.rotation.y)*15 -100,
                     camera.position.y - 70,
-                    camera.position.z + Math.cos(camera.rotation.y)*10 - 180
+                    camera.position.z + Math.cos(camera.rotation.y)*10 - 50
                 );
                 
-                
-                //gun.rotation.z=camera.rotation.y ;
-                //gun.rotation.z=camera.rotation.y;
-                //gun.rotation.x=camera.rotation.z;
-
-
                 renderer.render( scene, camera );
             }
                         
@@ -252,6 +245,7 @@
                         {
                             gun2.visible=false;
                         }
+                        window.removeEventListener("mousemove", onMouseMove, false);
                         break;
                     case 98: // S
                         gun2.visible=true;
@@ -259,6 +253,7 @@
                         {
                             gun1.visible=false;
                         }
+                        window.removeEventListener("mousemove", onMouseMove, false);
                         break;
                 }
             }
