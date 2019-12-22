@@ -14,9 +14,9 @@
         <script src="https://threejs.org/build/three.js"></script>
         <script src="js/GLTFLoader.js"></script>
         <script src="js/OrbitControls.js"></script>
-     <!--   <script src="js/script.js" type="module"></script> -->
         <script>  
-            
+
+
             let scene,camera,renderer,controls,right, up, at;
             let keyboard={};
             let player={pHeight:300,speed:20,turnSpeed:Math.PI*0.02};
@@ -26,6 +26,7 @@
             directions.backward = false;
             directions.left = false;
             directions.right = false;
+            let gun;
 
             let init=()=>{
 
@@ -33,7 +34,7 @@
                 scene= new THREE.Scene();
                 scene.background=new THREE.Color(0xdddddd);
 
-
+                //Vector pour le réglages de la direc
                 right = new THREE.Vector3();
                 up = new THREE.Vector3();
                 at = new THREE.Vector3();
@@ -74,28 +75,37 @@
                 let skybox=new THREE.Mesh(skyboxGeo,materialArray);
                 scene.add(skybox);
 
-
+                var lightt = new THREE.AmbientLight( 0x404040 ); // soft white light
+                scene.add( lightt );
                 //PointLight
-                let light = new THREE.PointLight(0xc4c4c4,0.3);
+                let light = new THREE.PointLight(0xc4c4c4,0.1);
                 light.position.set(0,300,500);
                 scene.add(light);
-                let light2 = new THREE.PointLight(0xc4c4c4,0.3);
+                let light2 = new THREE.PointLight(0xc4c4c4,0.1);
                 light2.position.set(500,100,0);
                 scene.add(light2);
-                let light3 = new THREE.PointLight(0xc4c4c4,0.3);
+                let light3 = new THREE.PointLight(0xc4c4c4,0.1);
                 light3.position.set(0,100,-500);
                 scene.add(light3);
-                let light4 = new THREE.PointLight(0xc4c4c4,0.3);
+                let light4 = new THREE.PointLight(0xc4c4c4,0.1);
                 light4.position.set(-500,300,500);
                 scene.add(light4);
     
                 //House1 object
-                let loaderr=new THREE.GLTFLoader();
-                loaderr.load('fbx/house1/scene.gltf',(obj)=>{
+                let loaderGLTF=new THREE.GLTFLoader();
+                loaderGLTF.load('fbx/house1/scene.gltf',(obj)=>{
                     let car=obj.scene.children[0];
                     car.scale.set(300,300,300);
                     car.position.set(0,270,0);
                     scene.add(obj.scene);
+                });
+                
+                loaderGLTF.load('fbx/ARX-160/scene.gltf',(obj)=>{
+                    let car=obj.scene.children[0];
+                    car.scale.set(1,1,1);
+                    car.position.set(238,300,2360);
+                    gun=obj.scene;
+                    scene.add(gun);
                 });
 
                 //Plane:
@@ -105,6 +115,7 @@
                 let plane=new THREE.Mesh(planeGeo,planeMat);
                 plane.rotation.x = -Math.PI / 2;
                 scene.add(plane);
+                
 
                 window.addEventListener("keydown", onKeyDown, false);
                 window.addEventListener("keyup", onKeyUp, false);
@@ -118,21 +129,23 @@
                 camera.rotation.y += rotation;
                 camera.matrix.extractBasis(right,up,at);
                 if(directions.forward) {
-                    camera.position.add(at.multiplyScalar(-100));
+                    camera.position.add(at.multiplyScalar(-50));
                     camera.matrix.extractBasis(right,up,at);
+                    console.log(camera.position);
                 }
                 if(directions.backward) {
-                    camera.position.add(at.multiplyScalar(100));
+                    camera.position.add(at.multiplyScalar(50));
                     camera.matrix.extractBasis(right,up,at);
                 }
                 if(directions.left) {
-                    camera.position.add(right.multiplyScalar(-100));
+                    camera.position.add(right.multiplyScalar(-50));
                     camera.matrix.extractBasis(right,up,at);
                 }
                 if(directions.right) {
-                    camera.position.add(right.multiplyScalar(100));
+                    camera.position.add(right.multiplyScalar(50));
                     camera.matrix.extractBasis(right,up,at);
                 }
+                //gun.visible=false;
                 renderer.render( scene, camera );
             }
                         
@@ -164,8 +177,8 @@
             
             function onMouseMove(event) {
                 var frRotation = {};
-                frRotation.minX = Math.abs(window.innerWidth - 400) / 2;
-                frRotation.maxX = frRotation.minX + 400;
+                frRotation.minX = Math.abs(window.innerWidth - 300) / 2;
+                frRotation.maxX = frRotation.minX + 300;
                 
                 if(event.clientX < frRotation.minX) {
                     rotation = Math.min(0.1, 0.00005 * (frRotation.minX - event.clientX));
