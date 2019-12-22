@@ -103,6 +103,12 @@
                     //car.rotation.set(-Math.PI/2,0,0);
                     gun1=obj.scene.children[0];
                     scene.add(obj.scene);
+
+                    let gun1Pres=gun1.clone();
+                    gun1Pres.position.set(1450,270,-600);
+                    gun1Pres.scale.set(0.3,0.3,0.3);
+                    scene.add(gun1Pres);
+
                     gun1.visible=false;
                 });
 
@@ -115,7 +121,13 @@
                     console.log(car.rotation);
                     gun2=obj.scene.children[0];
                     scene.add(obj.scene);
-                    gun2.visible=false;
+
+                    let gun2Pres=gun2.clone();
+                    gun2Pres.position.set(1450,150,-600);
+                    gun2Pres.scale.set(0.09,0.09,0.09);
+                    scene.add(gun2Pres);
+
+                    gun2.visible=false; 
                 });
 
 
@@ -158,6 +170,18 @@
                 presentation.rotation.y = -Math.PI / 2;
                 presentation.position.set(1450,270,-600);
                 scene.add(presentation);
+
+                //texte:  
+                let txtGeo=new THREE.PlaneGeometry(100,50);
+                let txtTexture=new THREE.TextureLoader().load('texture/ttl.png');
+                let txtMat=new THREE.MeshBasicMaterial({map: txtTexture ,side: THREE.DoubleSide});
+                let txt=new THREE.Mesh(txtGeo,txtMat);
+                txt.rotation.y = Math.PI / 2;
+                txt.position.set(1455,350,-600);
+                scene.add(txt);
+
+                    
+                
 
                 window.addEventListener("keydown", onKeyDown, false);
                 window.addEventListener("keyup", onKeyUp, false);
