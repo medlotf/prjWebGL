@@ -245,8 +245,20 @@
                     case 68: // D
                         directions.right = true;break;
                     case 83: // S
-                        directions.backward = true;
-                        //gun.visible=true;
+                        directions.backward = true;break;
+                    case 97: // S
+                        gun1.visible=true;
+                        if(gun2.visible)
+                        {
+                            gun2.visible=false;
+                        }
+                        break;
+                    case 98: // S
+                        gun2.visible=true;
+                        if(gun1.visible)
+                        {
+                            gun1.visible=false;
+                        }
                         break;
                 }
             }
