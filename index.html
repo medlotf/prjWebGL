@@ -50,12 +50,6 @@
                 renderer.setSize(window.innerWidth,window.innerHeight);
                 document.body.appendChild(renderer.domElement);
 
-                //Controls:
-            /*  controls = new THREE.OrbitControls(camera,renderer.domElement);
-                controls.addEventListener('change', renderer);
-                controls.minDistance=100;
-                controls.maxDistance=30000;*/
-
                 //Skybox:
                 let materialArray=[];
                 let loader=new THREE.TextureLoader();
@@ -75,6 +69,7 @@
                 let skybox=new THREE.Mesh(skyboxGeo,materialArray);
                 scene.add(skybox);
 
+                //LIGHT:
                 var lightt = new THREE.AmbientLight( 0x404040 ); // soft white light
                 scene.add( lightt );
                 //PointLight
@@ -100,6 +95,7 @@
                     scene.add(obj.scene);
                 });
                 
+                //Gun1
                 loaderGLTF.load('fbx/gun1/scene.gltf',(obj)=>{
                     let car=obj.scene.children[0];
                     car.scale.set(1,1,1);
@@ -107,9 +103,10 @@
                     //car.rotation.set(-Math.PI/2,0,0);
                     gun1=obj.scene.children[0];
                     scene.add(obj.scene);
-                    gun.visible=false;
+                    gun1.visible=false;
                 });
 
+                //Gun2
                 loaderGLTF.load('fbx/gun3/scene.gltf',(obj)=>{
                     let car=obj.scene.children[0];
                     car.scale.set(0.12,0.12,0.12);
@@ -118,16 +115,33 @@
                     console.log(car.rotation);
                     gun2=obj.scene.children[0];
                     scene.add(obj.scene);
+                    gun2.visible=false;
                 });
 
 
                 //Plane:
                 let planeGeo=new THREE.PlaneGeometry(15000,15000);
                 let planeTexture=new THREE.TextureLoader().load('texture/grass.png');
-                let planeMat=new THREE.MeshBasicMaterial({map: planeTexture,side: THREE.DoubleSide,needsUpdate: true});
+                let planeMat=new THREE.MeshBasicMaterial({map: planeTexture,side: THREE.DoubleSide});
                 let plane=new THREE.Mesh(planeGeo,planeMat);
                 plane.rotation.x = -Math.PI / 2;
                 scene.add(plane);
+
+                //cibles:
+                let cibleGeo=new THREE.PlaneGeometry(100,150);
+                let cibleTexture=new THREE.TextureLoader().load('texture/cible.jpg');
+                let cibleMat=new THREE.MeshBasicMaterial({map: cibleTexture,side: THREE.DoubleSide});
+                let cible1=new THREE.Mesh(cibleGeo,cibleMat);
+                cible1.rotation.y = -Math.PI / 2;
+                cible1.position.set(-130,300,-670);
+                scene.add(cible1);
+                let cible2=cible1.clone();
+                cible2.position.set(-400,300,-410);
+                scene.add(cible2);
+                let cible3=cible1.clone();
+                cible1.position.set(-780,300,-115);
+                scene.add(cible3);
+                
 
                 window.addEventListener("keydown", onKeyDown, false);
                 window.addEventListener("keyup", onKeyUp, false);
@@ -137,12 +151,15 @@
             }
 
             let animate=()=>{
+
                 requestAnimationFrame(animate);
+
                 camera.rotation.y += rotation;
                 camera.matrix.extractBasis(right,up,at);
                 if(directions.forward) {
                     camera.position.add(at.multiplyScalar(-50));
                     camera.matrix.extractBasis(right,up,at);
+                    console.log(camera.position);
                 }
                 if(directions.backward) {
                     camera.position.add(at.multiplyScalar(50));
@@ -157,22 +174,19 @@
                     camera.matrix.extractBasis(right,up,at);
                 }
                 
-                //if(gun1.visible)
-                //{
-                    gun1.position.set(
+                
+                gun1.position.set(
                     camera.position.x - Math.sin(camera.rotation.y)*15 + 150,
                     camera.position.y - 40,
                     camera.position.z + Math.cos(camera.rotation.y)*10 - 300
                 );
-                //}
-                //if(gun2.visible)
-                //{
-                    gun2.position.set(
+                
+                gun2.position.set(
                     camera.position.x - Math.sin(camera.rotation.y)*15 + 60,
                     camera.position.y - 70,
                     camera.position.z + Math.cos(camera.rotation.y)*10 - 180
                 );
-                //}
+                
                 
 
                 
