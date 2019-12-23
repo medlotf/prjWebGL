@@ -26,16 +26,16 @@
         <script>  
 
 
-            let scene,camera,renderer,controls,right, up, at;
+            let scene,camera,renderer,controls,right,up,at;
             let keyboard={};
-            let player={pHeight:300,speed:20,turnSpeed:Math.PI*0.02};
             let rotation = 0;
             let directions = {};
             directions.forward = false;
             directions.backward = false;
             directions.left = false;
             directions.right = false;
-            let gun1,gun2;
+            let gun1,gun2,presentation;
+
 
             let init=()=>{
 
@@ -129,7 +129,6 @@
                     car.scale.set(0.12,0.12,0.12);
                     car.position.set(238,300,2360);
                     car.rotation.z += Math.PI;
-                    console.log(car.rotation);
                     gun2=obj.scene.children[0];
                     scene.add(obj.scene);
 
@@ -167,7 +166,7 @@
                 scene.add(cible3);
                 
 
-                //bacground table
+                //background table
                 let bgGeo=new THREE.PlaneGeometry(500,500);
                 let bgMat=new THREE.MeshBasicMaterial({color: 0x000000 ,side: THREE.DoubleSide});
                 let bg=new THREE.Mesh(bgGeo,bgMat);
@@ -178,7 +177,7 @@
                 //table of guns:
                 let presentationGeo=new THREE.PlaneGeometry(300,300);
                 let presentationMat=new THREE.MeshBasicMaterial({color: 0x0e240b ,side: THREE.DoubleSide});
-                let presentation=new THREE.Mesh(presentationGeo,presentationMat);
+                presentation=new THREE.Mesh(presentationGeo,presentationMat);
                 presentation.rotation.y = -Math.PI / 2;
                 presentation.position.set(1450,270,-600);
                 scene.add(presentation);
@@ -211,7 +210,6 @@
                 if(directions.forward) {
                     camera.position.add(at.multiplyScalar(-50));
                     camera.matrix.extractBasis(right,up,at);
-                    console.log(camera.position);
                 }
                 if(directions.backward) {
                     camera.position.add(at.multiplyScalar(50));
@@ -251,21 +249,29 @@
                         directions.right = true;break;
                     case 83: // S
                         directions.backward = true;break;
-                    case 97: // S
-                        gun1.visible=true;
-                        if(gun2.visible)
+                    case 97: // 1
+                        if(distance(camera.position,presentation.position)<550)
                         {
-                            gun2.visible=false;
+                            gun1.visible=true;
+                            if(gun2.visible)
+                            {
+                                gun2.visible=false;
+                            }
+                            camera.rotation.y=Math.PI/2;
+                            window.removeEventListener("mousemove", onMouseMove, false);
                         }
-                        window.removeEventListener("mousemove", onMouseMove, false);
                         break;
-                    case 98: // S
-                        gun2.visible=true;
-                        if(gun1.visible)
+                    case 98: // 2
+                        if(distance(camera.position,presentation.position)<550)
                         {
-                            gun1.visible=false;
+                            gun2.visible=true;
+                            if(gun1.visible)
+                            {
+                                gun1.visible=false;
+                            }
+                            camera.rotation.y=Math.PI/2;
+                            window.removeEventListener("mousemove", onMouseMove, false);
                         }
-                        window.removeEventListener("mousemove", onMouseMove, false);
                         break;
                 }}
             
@@ -296,6 +302,15 @@
                 else {
                     rotation = 0;
                 }
+            }
+
+            function distance( v1, v2 )
+            {
+                var dx = v1.x - v2.x;
+                var dy = v1.y - v2.y;
+                var dz = v1.z - v2.z;
+
+                return Math.sqrt( dx * dx + dy * dy + dz * dz );
             }
 
             window.onload=init;
