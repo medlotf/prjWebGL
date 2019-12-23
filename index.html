@@ -34,7 +34,7 @@
             directions.backward = false;
             directions.left = false;
             directions.right = false;
-            let gun1,gun2,presentation;
+            let gun1,gun2,presentation,lightP;
 
 
             let init=()=>{
@@ -50,8 +50,8 @@
 
                 //Camera:
                 camera= new THREE.PerspectiveCamera(45,window.innerWidth/window.innerHeight,45,30000);
-                camera.position.set(3423,300,-615);
-                camera.rotation.set(0,3*Math.PI/2,0);
+                camera.position.set(2222,300,-650);
+                camera.rotation.set(0,Math.PI/2,0);
                 camera.matrix.extractBasis(right,up,at);
                 
                 
@@ -80,26 +80,25 @@
                 scene.add(skybox);
 
                 //LIGHT:
-                var lightt = new THREE.AmbientLight( 0x404040 ); // soft white light
-                scene.add( lightt );
-                //PointLight
-                let light = new THREE.PointLight(0xc4c4c4,0.6);
-                light.position.set(0,300,500);
+                let light = new THREE.AmbientLight(0xFFFFFF,1);
+                //light.position.set(4760, 700, 4070);
                 scene.add(light);
-                let light2 = new THREE.PointLight(0xc4c4c4,0.6);
-                light2.position.set(500,100,0);
-                scene.add(light2);
-                let light3 = new THREE.PointLight(0xc4c4c4,0.6);
-                light3.position.set(0,100,-500);
-                scene.add(light3);
-                let light4 = new THREE.PointLight(0xc4c4c4,0.6);
-                light4.position.set(-500,300,500);
-                scene.add(light4);
+
+                let light1 = new THREE.DirectionalLight(0xFFFFFF, .5);
+                light1.position.set(2222, 1000, -1000);
+                light1.castShadow = true;
+                light1.shadow.camera.far = 2000;
+                light1.shadow.camera.near = 10;
+                light1.shadow.mapSize.width = 4096;
+                light1.shadow.mapSize.height = 4096;
+                scene.add(light1);
     
                 //House1 object
                 let loaderGLTF=new THREE.GLTFLoader();
                 loaderGLTF.load('fbx/house1/scene.gltf',(obj)=>{
                     let car=obj.scene.children[0];
+                    car.castShadow = true;
+					car.receiveShadow = true;
                     car.scale.set(300,300,300);
                     car.position.set(0,270,0);
                     scene.add(obj.scene);
@@ -111,12 +110,16 @@
                     car.scale.set(1,1,1);
                     car.position.set(238,300,2360);
                     car.rotation.set(-Math.PI/2,0,Math.PI/2);
+                    car.castShadow = true;
+					car.receiveShadow = true;
                     gun1=obj.scene.children[0];
                     scene.add(obj.scene);
 
                     let gun1Pres=gun1.clone();
                     gun1Pres.position.set(1450,270,-600);
                     gun1Pres.scale.set(0.3,0.3,0.3);
+                    gun1Pres.castShadow = true;
+					gun1Pres.receiveShadow = true;
                     gun1Pres.rotation.set(-Math.PI/2,0,0);
                     scene.add(gun1Pres);
 
@@ -136,6 +139,8 @@
                     gun2Pres.position.set(1450,150,-600);
                     gun2Pres.rotation.set(car.rotation.x,car.rotation.y,-Math.PI/2);
                     gun2Pres.scale.set(0.09,0.09,0.09);
+                    gun2Pres.castShadow = true;
+					gun2Pres.receiveShadow = true;
                     scene.add(gun2Pres);
 
                     gun2.visible=false; 
@@ -235,16 +240,17 @@
                     camera.position.y - 70,
                     camera.position.z + Math.cos(camera.rotation.y)*10 - 50
                 );
-                
+
                 renderer.render( scene, camera );
             }
                         
             function onKeyDown(e) {
                 switch(e.keyCode) {
                     case 81: // Q
-                        directions.left = true;break;
+                        directions.left = true;
+                        console.log(camera.position);break;
                     case 90: // Z
-                        directions.forward = true;break;
+                        console.log(camera.position);directions.forward = true;break;
                     case 68: // D
                         directions.right = true;break;
                     case 83: // S
