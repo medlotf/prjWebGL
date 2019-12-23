@@ -34,7 +34,9 @@
             directions.backward = false;
             directions.left = false;
             directions.right = false;
-            let gun1,gun2,presentation,lightP;
+            let gun1,gun2,presentation,lightP,shot=0;
+            
+            var bullets=[];
 
 
             let init=()=>{
@@ -84,7 +86,7 @@
                 //light.position.set(4760, 700, 4070);
                 scene.add(light);
 
-                let light1 = new THREE.DirectionalLight(0xFFFFFF, .5);
+                let light1 = new THREE.DirectionalLight(0xFFFFFF, 2);
                 light1.position.set(2222, 1000, -1000);
                 light1.castShadow = true;
                 light1.shadow.camera.far = 2000;
@@ -92,6 +94,10 @@
                 light1.shadow.mapSize.width = 4096;
                 light1.shadow.mapSize.height = 4096;
                 scene.add(light1);
+
+                var lighttt = new THREE.PointLight( 0xffffff, 1, 100 );
+                light.position.set( 1335, 400, -210 );
+                scene.add( lighttt );
     
                 //House1 object
                 let loaderGLTF=new THREE.GLTFLoader();
@@ -210,6 +216,18 @@
 
                 requestAnimationFrame(animate);
 
+                for(var i=0;i<bullets.length;i++)
+                {
+                    if(bullets[i]===undefined) continue;
+                    if(bullets[i].alive== false)
+                    {
+                        bullets.splice(i,1);
+                        continue;
+                    }
+                    bullets[i].position.add(bullets[i].velocity);
+                }
+                
+
                 camera.rotation.y += rotation;
                 camera.matrix.extractBasis(right,up,at);
                 if(directions.forward) {
@@ -240,7 +258,8 @@
                     camera.position.y - 70,
                     camera.position.z + Math.cos(camera.rotation.y)*10 - 50
                 );
-
+                if(shot>0)
+                    shot--;
                 renderer.render( scene, camera );
             }
                         
@@ -279,7 +298,28 @@
                             window.removeEventListener("mousemove", onMouseMove, false);
                         }
                         break;
-                }}
+                    case 32:
+                        if(shot<=0)
+                        {
+                            var bullet=new THREE.Mesh(
+                            new THREE.SphereGeometry(5,5,5),
+                            new THREE.MeshBasicMaterial({color:0xffff00})
+                        );
+                        
+                            bullet.position.set(gun1.position.x+150,gun1.position.y,gun1.position.z); 
+                            bullet.velocity=new THREE.Vector3(-Math.sin(camera.rotation.y) - 100,0,Math.cos(camera.rotation.y));
+
+                            bullet.alive=true;
+                            setTimeout( ()=>{
+                                bullet.alive=false;
+                                scene.remove(bullet); 
+                            },2000);
+                            bullets.push(bullet);
+                            scene.add(bullet);
+                            shot=5;
+                        }
+                    }
+                }
             
             function onKeyUp(e) {
                 switch(e.keyCode) {
