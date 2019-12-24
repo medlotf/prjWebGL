@@ -34,7 +34,7 @@
             directions.backward = false;
             directions.left = false;
             directions.right = false;
-            let gun1,gun2,presentation,lightP,shot=0;
+            let gun1,gun2,presentation,lightP,blt,shot=0;
             
             var bullets=[];
 
@@ -93,6 +93,7 @@
                 light1.shadow.camera.near = 10;
                 light1.shadow.mapSize.width = 4096;
                 light1.shadow.mapSize.height = 4096;
+                light.target=gun1;
                 scene.add(light1);
 
                 var lighttt = new THREE.PointLight( 0xffffff, 1, 100 );
@@ -151,7 +152,20 @@
 
                     gun2.visible=false; 
                 });
-
+                
+                light.target=gun1;
+                //Bullet
+                loaderGLTF.load('fbx/bullet/scene.gltf',(obj)=>{
+                    let car=obj.scene.children[0];
+                    car.scale.set(1.5,1.5,1.5);
+                    car.position.set(2200,300,-650);
+                    car.rotation.set(-Math.PI/2,Math.PI,Math.PI/2);
+                    car.castShadow = true;
+					car.receiveShadow = true;
+                    blt=obj.scene.children[0];
+                    scene.add(obj.scene);
+                    blt.visible=false;
+                });
 
                 //Plane:
                 let planeGeo=new THREE.PlaneGeometry(15000,15000);
@@ -227,7 +241,6 @@
                     bullets[i].position.add(bullets[i].velocity);
                 }
                 
-
                 camera.rotation.y += rotation;
                 camera.matrix.extractBasis(right,up,at);
                 if(directions.forward) {
@@ -301,10 +314,9 @@
                     case 32:
                         if(shot<=0)
                         {
-                            var bullet=new THREE.Mesh(
-                            new THREE.SphereGeometry(5,5,5),
-                            new THREE.MeshBasicMaterial({color:0xffff00})
-                        );
+                            //var bullet=new THREE.Mesh(new THREE.SphereGeometry(5,5,5),new THREE.MeshBasicMaterial({color:0xffff00}));
+                            var bullet= blt.clone();
+                            bullet.visible=true;
                         
                             bullet.position.set(gun1.position.x+150,gun1.position.y,gun1.position.z); 
                             bullet.velocity=new THREE.Vector3(-Math.sin(camera.rotation.y) - 100,0,Math.cos(camera.rotation.y));
